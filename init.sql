@@ -1,10 +1,10 @@
 -- Supprimer les tables si elles existent déjà
-DROP TABLE glpi_tickets;
 DROP TABLE glpi_treated_tickets;
-DROP TABLE glpi_admin;
-DROP TABLE glpi_entities;
-DROP TABLE glpi_users;
 DROP TABLE glpi_notifications;
+DROP TABLE glpi_tickets;
+DROP TABLE glpi_admin;
+DROP TABLE glpi_users;
+DROP TABLE glpi_entities;
 
 -- Créer la table glpi_users pour représenter les utilisateurs
 CREATE TABLE glpi_users (
