@@ -16,7 +16,7 @@ CREATE INDEX idx_glpi_treated_tickets_entities_id ON glpi_treated_tickets(entite
 
 -- Création d'un index sur la colonne email de la table glpi_users
 -- Cet index améliorera les performances des requêtes impliquant l'email des utilisateurs
-CREATE INDEX idx_glpi_users_email ON glpi_users(email);
+CREATE UNIQUE INDEX idx_glpi_users_email ON glpi_users(email);
 
 -- Création d'un index sur la colonne user_id_1 de la table glpi_notifications
 -- Cet index améliorera les performances des requêtes impliquant l'ID de l'utilisateur 1 dans les notifications
