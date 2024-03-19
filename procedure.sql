@@ -1,8 +1,10 @@
+-- Procédure pour clore un ticket
 CREATE OR REPLACE PROCEDURE close_ticket (
     p_ticket_id IN NUMBER
 ) AS
 BEGIN
     -- Insérer dans la table glpi_treated_tickets en fonction des données du ticket existant
+    -- Cette procédure clôture un ticket en le déplaçant vers la table des tickets traités
     INSERT INTO glpi_treated_tickets (id, ticket_id, entites_id, name, date, closedDate, solveDate, glpi_tickets_category_id, location, items_id)
     SELECT
         glpi_treated_tickets_seq.NEXTVAL,
@@ -23,15 +25,17 @@ BEGIN
     -- Supprimer le ticket traité de la table glpi_tickets
     DELETE FROM glpi_tickets WHERE id = p_ticket_id;
     
-    COMMIT;
+    COMMIT; -- Validation des changements dans la base de données
 END;
 /
 
+-- Procédure pour rouvrir un ticket fermé
 CREATE OR REPLACE PROCEDURE reopen_closed_ticket (
     p_ticket_id IN NUMBER
 ) AS
 BEGIN
     -- Insérer dans la table glpi_tickets en fonction des données du ticket traité existant
+    -- Cette procédure rouvre un ticket en le déplaçant de la table des tickets traités à la table des tickets ouverts
     INSERT INTO glpi_tickets (id, entites_id, name, date, user_id_last_updater, glpi_tickets_category_id, status, location, items_id)
     SELECT
         ticket_id,
@@ -51,10 +55,11 @@ BEGIN
     -- Supprimer le ticket traité de la table glpi_treated_tickets
     DELETE FROM glpi_treated_tickets WHERE ticket_id = p_ticket_id;
     
-    COMMIT;
+    COMMIT; -- Validation des changements dans la base de données
 END;
 /
 
+-- Procédure pour créer un nouvel utilisateur
 CREATE OR REPLACE PROCEDURE create_user_procedure (
     p_username IN VARCHAR2,
     p_password IN VARCHAR2
@@ -69,6 +74,7 @@ BEGIN
 END create_user_procedure;
 /
 
+-- Procédure pour ajouter un administrateur avec un rôle spécifique basé sur son emplacement
 CREATE OR REPLACE PROCEDURE add_admin_procedure (
     p_user_id IN NUMBER,
     p_location IN VARCHAR2
@@ -78,8 +84,10 @@ BEGIN
     DECLARE
         v_username VARCHAR2(255);
     BEGIN
+        -- Récupérer le nom d'utilisateur à partir de l'ID fourni
         SELECT name INTO v_username FROM glpi_users WHERE id = p_user_id;
-        EXECUTE IMMEDIATE 'GRANT' || LOWER(p_location) || '_technician_role TO ' || v_username;
+        -- Attribuer un rôle spécifique basé sur l'emplacement de l'administrateur
+        EXECUTE IMMEDIATE 'GRANT ' || LOWER(p_location) || '_technician_role TO ' || v_username;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('L''utilisateur avec l''ID fourni n''existe pas.');
