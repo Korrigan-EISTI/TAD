@@ -1,63 +1,68 @@
--- Déclencheurs pour chaque table pour récupérer les identifiants uniques avant l'insertion
--- Les déclencheurs assurent l'assignation automatique des identifiants à chaque insertion
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_entities
 CREATE OR REPLACE TRIGGER glpi_entities_trigger
 BEFORE INSERT ON glpi_entities
 FOR EACH ROW
 BEGIN
-    SELECT glpi_entities_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_entities_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_tickets
 CREATE OR REPLACE TRIGGER glpi_tickets_trigger
 BEFORE INSERT ON glpi_tickets
 FOR EACH ROW
 BEGIN
-    SELECT glpi_tickets_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_tickets_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_treated_tickets
 CREATE OR REPLACE TRIGGER glpi_treated_tickets_trigger
 BEFORE INSERT ON glpi_treated_tickets
 FOR EACH ROW
 BEGIN
-    SELECT glpi_treated_tickets_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_treated_tickets_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_users
 CREATE OR REPLACE TRIGGER glpi_users_trigger
 BEFORE INSERT ON glpi_users
 FOR EACH ROW
 BEGIN
-    SELECT glpi_users_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_users_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_admin
 CREATE OR REPLACE TRIGGER glpi_admin_trigger
 BEFORE INSERT ON glpi_admin
 FOR EACH ROW
 BEGIN
-    SELECT glpi_admin_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_admin_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour générer des identifiants uniques avant l'insertion dans la table glpi_notifications
 CREATE OR REPLACE TRIGGER glpi_notifications_trigger
 BEFORE INSERT ON glpi_notifications
 FOR EACH ROW
 BEGIN
-    SELECT glpi_notifications_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
+    SELECT glpi_notifications_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtient la prochaine valeur de la séquence et l'assigne à l'ID de la nouvelle ligne
 END;
 /
 
+-- Déclencheur pour gérer les opérations sur les tickets à Cergy
 CREATE OR REPLACE TRIGGER cergy_tickets_trigger
 INSTEAD OF INSERT OR UPDATE OR DELETE ON cergy_tickets
 FOR EACH ROW
 BEGIN
     IF INSERTING THEN
-        -- Effectuer l'insertion dans la table glpi_tickets
+        -- Insérer dans la table glpi_tickets
         INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
         VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id);
     ELSIF UPDATING THEN
-        -- Effectuer la mise à jour dans la table glpi_tickets
+        -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
         SET
             entites_id = :NEW.entites_id,
@@ -70,22 +75,23 @@ BEGIN
         WHERE
             id = :NEW.id;
     ELSIF DELETING THEN
-        -- Effectuer la suppression dans la table glpi_tickets
+        -- Supprimer de la table glpi_tickets
         DELETE FROM glpi_tickets WHERE id = :OLD.id;
     END IF;
 END;
 /
 
+-- Déclencheur pour gérer les opérations sur les tickets à Pau
 CREATE OR REPLACE TRIGGER pau_tickets_trigger
 INSTEAD OF INSERT OR UPDATE OR DELETE ON pau_tickets
 FOR EACH ROW
 BEGIN
     IF INSERTING THEN
-        -- Effectuer l'insertion dans la table glpi_tickets
+        -- Insérer dans la table glpi_tickets
         INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
         VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id);
     ELSIF UPDATING THEN
-        -- Effectuer la mise à jour dans la table glpi_tickets
+        -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
         SET
             entites_id = :NEW.entites_id,
@@ -98,29 +104,27 @@ BEGIN
         WHERE
             id = :NEW.id;
     ELSIF DELETING THEN
-        -- Effectuer la suppression dans la table glpi_tickets
+        -- Supprimer de la table glpi_tickets
         DELETE FROM glpi_tickets WHERE id = :OLD.id;
     END IF;
 END;
 /
 
--- Déclencheur pour créer un utilisateur dans le système externe après l'insertion dans glpi_users
--- Ce déclencheur appelle une procédure stockée pour créer un utilisateur dans un système externe
+-- Déclencheur pour créer un utilisateur externe après l'insertion dans glpi_users
 CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
 FOR EACH ROW
 BEGIN
-    create_user_procedure(:NEW.name, :NEW.password); -- Appel de la procédure stockée avec les informations du nouvel utilisateur
+    create_user_procedure(:NEW.name, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
 END;
 /
 
--- Déclencheur pour ajouter un administrateur dans le système externe après l'insertion dans glpi_admin
--- Ce déclencheur appelle une procédure stockée pour ajouter un administrateur dans un système externe
+-- Déclencheur pour ajouter un administrateur externe après l'insertion dans glpi_admin
 CREATE OR REPLACE TRIGGER add_admin_trigger
 AFTER INSERT ON glpi_admin
 FOR EACH ROW
 BEGIN
-    add_admin_procedure(:NEW.user_id, :NEW.location); -- Appel de la procédure stockée avec les informations du nouvel administrateur
+    add_admin_procedure(:NEW.user_id, :NEW.location); -- Appel de la procédure stockée pour ajouter un administrateur externe avec les informations du nouvel administrateur
 END;
 /
 
