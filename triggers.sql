@@ -1,4 +1,5 @@
 -- Création des séquences pour chaque table
+-- Les séquences génèrent des identifiants uniques pour chaque table
 CREATE SEQUENCE glpi_entities_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE glpi_tickets_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE glpi_treated_tickets_seq START WITH 1 INCREMENT BY 1;
@@ -7,6 +8,7 @@ CREATE SEQUENCE glpi_admin_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE glpi_notifications_seq START WITH 1 INCREMENT BY 1;
 
 -- Déclencheurs pour chaque table pour récupérer les identifiants uniques avant l'insertion
+-- Les déclencheurs assurent l'assignation automatique des identifiants à chaque insertion
 CREATE OR REPLACE TRIGGER glpi_entities_trigger
 BEFORE INSERT ON glpi_entities
 FOR EACH ROW
@@ -50,6 +52,7 @@ BEGIN
 END;
 
 -- Déclencheur pour la vue cergy_tickets
+-- Le déclencheur permet de manipuler les opérations d'insertion, de mise à jour et de suppression sur la vue cergy_tickets
 CREATE OR REPLACE TRIGGER cergy_tickets_trigger
 INSTEAD OF INSERT OR UPDATE OR DELETE ON cergy_tickets
 FOR EACH ROW
@@ -80,6 +83,7 @@ END;
 /
 
 -- Déclencheur pour la vue pau_tickets (de manière similaire)
+-- Ce déclencheur fonctionne de manière similaire à celui de la vue cergy_tickets
 CREATE OR REPLACE TRIGGER pau_tickets_trigger
 INSTEAD OF INSERT OR UPDATE OR DELETE ON pau_tickets
 FOR EACH ROW
@@ -109,21 +113,24 @@ BEGIN
 END;
 /
 
+-- Déclencheur pour créer un utilisateur dans le système externe après l'insertion dans glpi_users
+-- Ce déclencheur appelle une procédure stockée pour créer un utilisateur dans un système externe
 CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
 FOR EACH ROW
 BEGIN
-    create_user_procedure(:NEW.name, :NEW.password);
+    create_user_procedure(:NEW.name, :NEW.password); -- Appel de la procédure stockée avec les informations du nouvel utilisateur
 END;
 /
 
+-- Déclencheur pour ajouter un administrateur dans le système externe après l'insertion dans glpi_admin
+-- Ce déclencheur appelle une procédure stockée pour ajouter un administrateur dans un système externe
 CREATE OR REPLACE TRIGGER add_admin_trigger
 AFTER INSERT ON glpi_admin
 FOR EACH ROW
 BEGIN
-    add_admin_procedure(:NEW.user_id, :NEW.location);
+    add_admin_procedure(:NEW.user_id, :NEW.location); -- Appel de la procédure stockée avec les informations du nouvel administrateur
 END;
 /
-
 
 COMMIT;

@@ -4,3 +4,5 @@ CREATE CLUSTER clst_glpi_tickets_location (location)
     SINGLE TABLESPACE admin 
     SIZE 1024M
     HASHKEYS 100;
+
+COMMIT;
