@@ -23,5 +23,4 @@ GRANT SELECT, INSERT, UPDATE ON tickets_table TO technician_role;
 -- Pour le rôle d'utilisateur final
 GRANT SELECT, INSERT ON tickets_table TO end_user_role;
 
--- Validation des modifications
 COMMIT;

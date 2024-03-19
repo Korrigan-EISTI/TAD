@@ -10,5 +10,4 @@ SELECT *
 FROM glpi_tickets
 WHERE UPPER(location) = 'PAU';
 
--- Validation des modifications
 COMMIT;

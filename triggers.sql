@@ -49,4 +49,4 @@ BEGIN
     SELECT glpi_notifications_seq.NEXTVAL INTO :NEW.id FROM dual; -- Obtenir la prochaine valeur de la séquence et l'assigner à l'ID de la nouvelle ligne
 END;
 
-COMMIT; -- Valider les modifications dans la base de données
+COMMIT;
