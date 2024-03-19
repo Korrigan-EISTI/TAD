@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE closeGLPITicket (
+CREATE OR REPLACE PROCEDURE close_ticket (
     p_ticket_id IN NUMBER
 ) AS
 BEGIN
@@ -27,7 +27,7 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE move_treated_ticket_and_restore (
+CREATE OR REPLACE PROCEDURE reopen_closed_ticket (
     p_ticket_id IN NUMBER
 ) AS
 BEGIN
