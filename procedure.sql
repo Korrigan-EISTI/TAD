@@ -55,4 +55,37 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE create_user_procedure (
+    p_username IN VARCHAR2,
+    p_password IN VARCHAR2
+)
+AS
+BEGIN
+    -- Créer un nouvel utilisateur avec le nom et le mot de passe fournis
+    EXECUTE IMMEDIATE 'CREATE USER ' || p_username || ' IDENTIFIED BY "' || p_password || '"';
+    EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || p_username;
+    -- Attribuer le rôle simple_user_role à l'utilisateur créé
+    EXECUTE IMMEDIATE 'GRANT simple_user_role TO ' || p_username;
+END create_user_procedure;
+/
+
+CREATE OR REPLACE PROCEDURE add_admin_procedure (
+    p_user_id IN NUMBER,
+    p_location IN VARCHAR2
+)
+AS
+BEGIN
+    DECLARE
+        v_username VARCHAR2(255);
+    BEGIN
+        SELECT name INTO v_username FROM glpi_users WHERE id = p_user_id;
+        EXECUTE IMMEDIATE 'GRANT' || LOWER(p_location) || '_technician_role TO ' || v_username;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('L''utilisateur avec l''ID fourni n''existe pas.');
+    END;
+END add_admin_procedure;
+/
+
+
 COMMIT;
