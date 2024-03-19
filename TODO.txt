@@ -1,0 +1,7 @@
+- Index & Cluster
+- D'autres triggers ? D'autres vues ?
+- Contraintes supplémentaires:
+    - Date fermeture > Date ouverture
+    - Nom et prénom contiennent des lettres seulement
+    - Création de ticket : date d'ouverture = date de création de la ligne SQL
+- Le rapport
