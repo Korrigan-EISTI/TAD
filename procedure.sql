@@ -1,67 +1,62 @@
--- Procédure pour clore un ticket
--- Cette procédure clôture un ticket en le déplaçant vers la table des tickets traités
 CREATE OR REPLACE PROCEDURE close_ticket (
     p_ticket_id IN NUMBER
 ) AS
+    v_technician_role_exists NUMBER(1);
 BEGIN
+    -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
+    SELECT COUNT(*) INTO v_technician_role_exists
+    FROM USER_ROLE_PRIVS
+    WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
+
     -- Insérer dans la table glpi_treated_tickets en fonction des données du ticket existant
-    INSERT INTO glpi_treated_tickets (id, ticket_id, entites_id, name, date, closedDate, wasSolved, glpi_tickets_category_id, location, items_id)
-    SELECT
-        glpi_treated_tickets_seq.NEXTVAL,
-        id,
-        entites_id,
-        name,
-        date,
-        SYSTIMESTAMP,
-        CASE WHEN USER IN (SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = USER AND GRANTED_ROLE = 'ADMIN_ROLE') THEN SYSTIMESTAMP ELSE NULL END,
-        TRUE, -- Le ticket est considéré comme résolu lorsqu'il est clos
-        glpi_tickets_category_id,
-        location,
-        items_id
-    FROM
-        glpi_tickets
-    WHERE
-        id = p_ticket_id;
+    EXECUTE IMMEDIATE '
+        INSERT INTO glpi_treated_tickets (id, ticket_id, entites_id, name, creation_date, closedDate, solvedStatus, location, items_id)
+        SELECT glpi_treated_tickets_seq.NEXTVAL, id, entites_id, name, creation_date, SYSTIMESTAMP, CASE WHEN :tech_role_exists > 0 THEN 1 ELSE 0 END, location, items_id
+        FROM glpi_tickets
+        WHERE id = :ticket_id'
+    USING v_technician_role_exists, p_ticket_id;
         
     -- Supprimer le ticket traité de la table glpi_tickets
     DELETE FROM glpi_tickets WHERE id = p_ticket_id;
-    
-    COMMIT; -- Validation des changements dans la base de données
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Gérer les exceptions ici
+        ROLLBACK;
+        RAISE;
 END;
 /
 
--- Procédure pour rouvrir un ticket fermé
--- Cette procédure rouvre un ticket en le déplaçant de la table des tickets traités à la table des tickets ouverts
-CREATE OR REPLACE PROCEDURE reopen_closed_ticket (
+CREATE OR REPLACE PROCEDURE reopen_ticket (
     p_ticket_id IN NUMBER
 ) AS
+    v_technician_role_exists NUMBER(1);
 BEGIN
-    -- Insérer dans la table glpi_tickets en fonction des données du ticket traité existant
-    INSERT INTO glpi_tickets (id, entites_id, name, date, user_id_last_updater, glpi_tickets_category_id, status, location, items_id)
-    SELECT
-        ticket_id,
-        entites_id,
-        name,
-        date,
-        NULL, -- Réinitialiser l'utilisateur ayant mis à jour le ticket
-        glpi_tickets_category_id,
-        TRUE, -- Définir le statut du ticket sur ouvert
-        location,
-        items_id
-    FROM
-        glpi_treated_tickets
-    WHERE
-        ticket_id = p_ticket_id;
+    -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
+    SELECT COUNT(*) INTO v_technician_role_exists
+    FROM USER_ROLE_PRIVS
+    WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
+
+    -- Insérer dans la table glpi_tickets en fonction des données du ticket traité
+    EXECUTE IMMEDIATE '
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
+        SELECT :ticket_id, entites_id, name, SYSTIMESTAMP, NULL, 0, location, items_id
+        FROM glpi_treated_tickets
+        WHERE ticket_id = :ticket_id'
+    USING p_ticket_id, p_ticket_id;
         
     -- Supprimer le ticket traité de la table glpi_treated_tickets
-    DELETE FROM glpi_treated_tickets WHERE ticket_id = p_ticket_id;
+    EXECUTE IMMEDIATE 'DELETE FROM glpi_treated_tickets WHERE ticket_id = :ticket_id' USING p_ticket_id;
     
-    COMMIT; -- Validation des changements dans la base de données
+    COMMIT;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Gérer les exceptions ici
+        ROLLBACK;
+        RAISE;
 END;
 /
 
--- Procédure pour créer un nouvel utilisateur
--- Cette procédure crée un nouvel utilisateur dans le système avec un rôle par défaut.
 CREATE OR REPLACE PROCEDURE create_user_procedure (
     p_username IN VARCHAR2,
     p_password IN VARCHAR2
@@ -76,8 +71,6 @@ BEGIN
 END create_user_procedure;
 /
 
--- Procédure pour ajouter un administrateur avec un rôle spécifique basé sur son emplacement
--- Cette procédure attribue un rôle spécifique à un utilisateur en fonction de son emplacement.
 CREATE OR REPLACE PROCEDURE add_admin_procedure (
     p_user_id IN NUMBER,
     p_location IN VARCHAR2
@@ -87,10 +80,8 @@ BEGIN
     DECLARE
         v_username VARCHAR2(255);
     BEGIN
-        -- Récupérer le nom d'utilisateur à partir de l'ID fourni
         SELECT name INTO v_username FROM glpi_users WHERE id = p_user_id;
-        -- Attribuer un rôle spécifique basé sur l'emplacement de l'administrateur
-        EXECUTE IMMEDIATE 'GRANT ' || LOWER(p_location) || '_technician_role TO ' || v_username;
+        EXECUTE IMMEDIATE 'GRANT' || LOWER(p_location) || '_technician_role TO ' || v_username;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('L''utilisateur avec l''ID fourni n''existe pas.');

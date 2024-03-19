@@ -1,5 +1,9 @@
--- Création des rôles de base
-CREATE ROLE admin_role;
+alter session set "_ORACLE_SCRIPT"=true;
+
+CREATE TABLESPACE admin
+    DATAFILE 'admin.dbf' SIZE 1024M
+    AUTOEXTEND ON NEXT 100M MAXSIZE UNLIMITED;
+    
 CREATE ROLE technician_role;
 CREATE ROLE simple_user_role;
 
@@ -7,7 +11,9 @@ CREATE ROLE simple_user_role;
 CREATE ROLE pau_technician_role;
 CREATE ROLE cergy_technician_role;
 
-GRANT SELECT, INSERT, DELETE, UPDATE TO cergy_technician_role on cergy_tickets;
-GRANT SELECT, INSERT, DELETE, UPDATE TO pau_technician_role on pau_tickets;
+
+CREATE USER glpiAdmin IDENTIFIED BY glpiAdmin;
+
+GRANT DBA TO glpiAdmin;
 
 COMMIT;
