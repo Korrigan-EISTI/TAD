@@ -1,28 +1,34 @@
--- Supprimer les tables si elles existent déjà
+import cx_Oracle
+
+dsn = cx_Oracle.makedsn(host='Student-laptop', port=1521, service_name='XE')
+
+# Connexion à la base de données Oracle
+connection = cx_Oracle.connect(user='glpiAdmin', password='glpiAdmin', dsn=dsn)
+
+sql_script = """
 DROP TABLE glpi_treated_tickets;
 DROP TABLE glpi_notifications;
 DROP TABLE glpi_tickets;
 DROP TABLE glpi_admin;
 DROP TABLE glpi_users;
 DROP TABLE glpi_entities;
+"""
 
--- Créer la table glpi_users pour représenter les utilisateurs
+'''
 CREATE TABLE glpi_users (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
-    email VARCHAR(255) NOT NULL, -- Adresse email de l'utilisateur
+    email VARCHAR(255) NOT NULL UNIQUE, -- Adresse email de l'utilisateur
     name VARCHAR(255) NOT NULL, -- Nom de l'utilisateur
     first_name VARCHAR(255) NOT NULL, -- Prénom de l'utilisateur
     password VARCHAR(255) NOT NULL -- Mot de passe de l'utilisateur
 );
 
--- Créer la table glpi_entities pour représenter les entités associées aux tickets
 CREATE TABLE glpi_entities (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     name VARCHAR(255) NOT NULL, -- Nom de l'entité
     location VARCHAR(255) NOT NULL -- Emplacement de l'entité
 );
 
--- Créer la table glpi_tickets pour représenter les tickets
 CREATE TABLE glpi_tickets (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     entites_id NUMBER(10) NOT NULL, -- Clé étrangère vers glpi_entities
@@ -32,9 +38,8 @@ CREATE TABLE glpi_tickets (
     status NUMBER(1) NOT NULL CHECK (status IN (0, 1)),
     location VARCHAR(255) NOT NULL, -- Emplacement du ticket
     items_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc)
-    CONSTRAINT fk_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id), -- Contrainte de clé étrangère vers glpi_entities
-    CONSTRAINT fk_user_id_last_updater FOREIGN KEY (user_id_last_updater) REFERENCES glpi_users(id)
-)CLUSTER clst_glpi_tickets_location(location);
+    CONSTRAINT fk_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id) -- Contrainte de clé étrangère vers glpi_entities
+);
 
 CREATE TABLE glpi_treated_tickets (
     id NUMBER(10), -- Clé primaire de la table
@@ -48,9 +53,8 @@ CREATE TABLE glpi_treated_tickets (
     items_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc) traité
     CONSTRAINT pk_treated_tickets PRIMARY KEY (id, ticket_id), -- Clé primaire composée
     CONSTRAINT fk_treated_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id) -- Contrainte de clé étrangère vers glpi_entities
-)CLUSTER clst_glpi_tickets_location(location);
+);
 
--- Créer la table glpi_admin pour représenter les administrateurs
 CREATE TABLE glpi_admin (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     user_id NUMBER(10) NOT NULL, -- Clé étrangère vers glpi_users
@@ -58,7 +62,6 @@ CREATE TABLE glpi_admin (
     CONSTRAINT fk_admin_users FOREIGN KEY (user_id) REFERENCES glpi_users(id) -- Contrainte de clé étrangère vers glpi_users
 );
 
--- Créer la table glpi_notifications pour représenter les notifications liées aux tickets
 CREATE TABLE glpi_notifications (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     user_id_1 NUMBER(10) NOT NULL, -- ID de l'utilisateur 1
@@ -69,4 +72,25 @@ CREATE TABLE glpi_notifications (
     CONSTRAINT fk_notifications_tickets FOREIGN KEY (tickets_id) REFERENCES glpi_tickets(id) -- Contrainte de clé étrangère vers glpi_tickets pour tickets_id
 );
 
-COMMIT;
+"""
+'''
+try:
+    # Exécution du script SQL dans une transaction
+    cursor = connection.cursor()
+    cursor.execute(sql_script)
+    connection.commit()  # Valider la transaction
+    cursor.close()
+    print("Les instructions SQL ont été exécutées avec succès.")
+
+except cx_Oracle.DatabaseError as e:
+    error, = e.args
+    print("Une erreur s'est produite:")
+    print("Erreur Oracle:", error.message)
+
+except Exception as e:
+    print(f"Une erreur s'est produite : {str(e)}")
+
+finally:
+    # Fermeture de la connexion à la base de données
+    if connection:
+        connection.close()

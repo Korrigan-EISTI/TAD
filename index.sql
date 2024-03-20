@@ -2,10 +2,6 @@
 -- Cet index accélérera les opérations de recherche basées sur la localisation des tickets
 CREATE INDEX idx_glpi_tickets_location ON glpi_tickets(location);
 
--- Création d'un index sur la colonne glpi_tickets_category_id de la table glpi_tickets
--- Cet index améliorera les performances des requêtes impliquant la catégorie des tickets
-CREATE INDEX idx_glpi_tickets_category_id ON glpi_tickets(glpi_tickets_category_id);
-
 -- Création d'un index sur la colonne entites_id de la table glpi_tickets
 -- Cet index améliorera les performances des requêtes impliquant les entités des tickets
 CREATE INDEX idx_glpi_tickets_entities_id ON glpi_tickets(entites_id);
