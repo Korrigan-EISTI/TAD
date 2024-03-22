@@ -39,6 +39,7 @@ END;
 /
 
 -- Procédure pour rouvrir un ticket en tenant compte de la priorité
+-- Avertissement : Procédure créée avec erreurs de compilation.
 CREATE OR REPLACE PROCEDURE reopen_ticket (
     p_ticket_id IN NUMBER  -- ID du ticket à rouvrir
 ) AS
@@ -79,6 +80,8 @@ EXCEPTION
         RAISE;
 END;
 /
+
+show errors;
 
 -- Procédure pour créer un nouvel utilisateur
 CREATE OR REPLACE PROCEDURE create_user_procedure (
