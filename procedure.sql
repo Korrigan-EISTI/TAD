@@ -17,8 +17,8 @@ BEGIN
 
     -- Insérer dans la table glpi_treated_tickets en fonction des données du ticket existant
     EXECUTE IMMEDIATE '
-        INSERT INTO glpi_treated_tickets (id, ticket_id, entites_id, name, creation_date, closedDate, solvedStatus, location, items_id)
-        SELECT glpi_treated_tickets_seq.NEXTVAL, id, entites_id, name, creation_date, SYSTIMESTAMP, CASE WHEN :tech_role_exists > 0 THEN 1 ELSE 0 END, location, items_id
+        INSERT INTO glpi_treated_tickets (id, ticket_id, entites_id, name, creation_date, closedDate, solvedStatus, previousPriority, location, items_id)
+        SELECT glpi_treated_tickets_seq.NEXTVAL, id, entites_id, name, creation_date, SYSTIMESTAMP, CASE WHEN :tech_role_exists > 0 THEN 1 ELSE 0 END, priority, location, items_id
         FROM glpi_tickets
         WHERE id = :ticket_id'
     USING v_technician_role_exists, p_ticket_id;
@@ -52,14 +52,14 @@ BEGIN
     WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
 
     -- Récupérer la priorité du ticket
-    SELECT priority INTO v_priority
+    SELECT previousPriority INTO v_priority
     FROM glpi_treated_tickets
     WHERE ticket_id = p_ticket_id;
 
     -- Insérer dans la table glpi_tickets en fonction des données du ticket traité
     EXECUTE IMMEDIATE '
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        SELECT :ticket_id, entites_id, name, SYSTIMESTAMP, NULL, 0, location, items_id, :priority
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, priority, location, items_id)
+        SELECT :ticket_id, entites_id, name, SYSTIMESTAMP, NULL, 0, :priority, location, items_id
         FROM glpi_treated_tickets
         WHERE ticket_id = :ticket_id'
     USING p_ticket_id, v_priority, p_ticket_id;

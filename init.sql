@@ -45,6 +45,7 @@ CREATE TABLE glpi_treated_tickets (
     creation_date TIMESTAMP NOT NULL, -- Date de création du ticket traité
     closedDate TIMESTAMP NOT NULL, -- Date de fermeture du ticket
     solvedStatus NUMBER(1) NOT NULL CHECK (solvedStatus IN (0, 1)), -- Si le ticket a été fermé résolu ou non-résolu
+    previousPriority NUMBER(1) NOT NULL CHECK (previousPriority IN (1, 5)), -- Priorité du ticket
     location VARCHAR(255) NOT NULL, -- Emplacement du ticket traité
     items_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc) traité
     CONSTRAINT pk_treated_tickets PRIMARY KEY (id, ticket_id), -- Clé primaire composée
