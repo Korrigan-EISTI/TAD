@@ -2,8 +2,13 @@
 alter session set "_ORACLE_SCRIPT"=true;
 
 -- Créer un espace de table pour les données d'administration
-CREATE TABLESPACE admin
-    DATAFILE 'admin.dbf' SIZE 1024M
+CREATE TABLESPACE cergyAdmin
+    DATAFILE 'cergy.dbf' SIZE 1024M
+    AUTOEXTEND ON NEXT 100M MAXSIZE UNLIMITED;
+
+-- Créer un espace de table pour les données d'administration
+CREATE TABLESPACE pauAdmin
+    DATAFILE 'pau.dbf' SIZE 1024M
     AUTOEXTEND ON NEXT 100M MAXSIZE UNLIMITED;
 
 -- Créer des rôles dans la base de données
@@ -17,13 +22,13 @@ CREATE USER glpiAdmin IDENTIFIED BY glpiAdmin;
 GRANT DBA TO glpiAdmin;
 
 -- Créer un utilisateur pour l'administrateur GLPI
-CREATE USER glpiAdmin_cergy IDENTIFIED BY cergy;
+CREATE USER glpiAdmin_cergy IDENTIFIED BY cergy DEFAULT TABLESPACE cergyAdmin;
 
 -- Accorder le rôle DBA à l'utilisateur glpiAdmin
 GRANT DBA TO glpiAdmin_cergy;
 
 -- Créer un utilisateur pour l'administrateur GLPI
-CREATE USER glpiAdmin_pau IDENTIFIED BY pau;
+CREATE USER glpiAdmin_pau IDENTIFIED BY pau DEFAULT TABLESPACE pauAdmin;
 
 -- Accorder le rôle DBA à l'utilisateur glpiAdmin
 GRANT DBA TO glpiAdmin_pau;

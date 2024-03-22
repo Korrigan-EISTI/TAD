@@ -2,6 +2,7 @@
     - Date fermeture > Date ouverture
     - Nom et prénom contiennent des lettres seulement
     - Création de ticket : date d'ouverture = date de création de la ligne SQL
+Last trigger à faire insertion sur dans la table notification dès que que last updater est update
 
 - Génération des données pour tester notre solution
 

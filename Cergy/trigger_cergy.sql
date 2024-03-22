@@ -5,8 +5,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Fermat', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Fermat', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -17,7 +17,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Fermat',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;
@@ -28,8 +27,6 @@ BEGIN
 END;
 /
 
-show errors;
-
 -- Déclencheur pour gérer les opérations sur les tickets dans le batiment Cauchy
 CREATE OR REPLACE TRIGGER insert_ticket_cauchy
 INSTEAD OF INSERT OR UPDATE OR DELETE ON selectTicketFromCauchy
@@ -37,8 +34,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Cauchy', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Cauchy', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -49,7 +46,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Cauchy',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;
@@ -67,8 +63,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Turing', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Turing', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -79,7 +75,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Turing',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;
@@ -97,8 +92,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Condorcet', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Condorcet', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -109,7 +104,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Condorcet',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;
@@ -127,8 +121,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Saint Martin', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Saint Martin', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -139,7 +133,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Saint Martin',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;
@@ -157,8 +150,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Saint Germain', :NEW.items_id, :NEW.priority);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Saint Germain', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -169,7 +162,6 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = 'Saint Germain',
-            items_id = :NEW.items_id,
             priority = :NEW.priority
         WHERE
             id = :NEW.id;

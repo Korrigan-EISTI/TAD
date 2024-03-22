@@ -128,4 +128,21 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE TRIGGER trg_user_id_last_updater_notification
+AFTER UPDATE OF user_id_last_updater ON glpi_tickets
+FOR EACH ROW
+DECLARE
+    v_user_id_1 glpi_users.id%TYPE;
+    v_user_id_2 glpi_users.id%TYPE;
+BEGIN
+    -- Récupérer les IDs des utilisateurs concernés
+    SELECT id INTO v_user_id_1 FROM glpi_users WHERE id = :OLD.user_id_last_updater;
+    SELECT id INTO v_user_id_2 FROM glpi_users WHERE id = :NEW.user_id_last_updater;
+
+    -- Insérer une nouvelle notification
+    INSERT INTO glpi_notifications (id, user_id_1, user_id_2, tickets_id)
+    VALUES (glpi_notifications_seq.NEXTVAL, v_user_id_1, v_user_id_2, :NEW.id);
+END;
+/
+
 COMMIT;
