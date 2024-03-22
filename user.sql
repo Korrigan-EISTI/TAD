@@ -10,14 +10,22 @@ CREATE TABLESPACE admin
 CREATE ROLE technician_role;
 CREATE ROLE simple_user_role;
 
--- Créer des rôles supplémentaires pour les techniciens à Pau et à Cergy
-CREATE ROLE pau_technician_role;
-CREATE ROLE cergy_technician_role;
-
 -- Créer un utilisateur pour l'administrateur GLPI
 CREATE USER glpiAdmin IDENTIFIED BY glpiAdmin;
 
 -- Accorder le rôle DBA à l'utilisateur glpiAdmin
 GRANT DBA TO glpiAdmin;
+
+-- Créer un utilisateur pour l'administrateur GLPI
+CREATE USER glpiAdmin_cergy IDENTIFIED BY cergy;
+
+-- Accorder le rôle DBA à l'utilisateur glpiAdmin
+GRANT DBA TO glpiAdmin_cergy;
+
+-- Créer un utilisateur pour l'administrateur GLPI
+CREATE USER glpiAdmin_pau IDENTIFIED BY pau;
+
+-- Accorder le rôle DBA à l'utilisateur glpiAdmin
+GRANT DBA TO glpiAdmin_pau;
 
 COMMIT;

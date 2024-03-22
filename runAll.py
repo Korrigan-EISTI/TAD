@@ -5,13 +5,7 @@ dsn = cx_Oracle.makedsn(host='Student-laptop', port=1521, service_name='XE')
 # Connexion à la base de données Oracle
 connection = cx_Oracle.connect(user='glpiAdmin', password='glpiAdmin', dsn=dsn)
 
-sql_script = """
-DROP TABLE glpi_treated_tickets;
-DROP TABLE glpi_notifications;
-DROP TABLE glpi_tickets;
-DROP TABLE glpi_admin;
-DROP TABLE glpi_users;
-DROP TABLE glpi_entities;
+sql_script = """DROP TABLE glpi_treated_tickets; DROP TABLE glpi_notifications; DROP TABLE glpi_tickets; DROP TABLE glpi_admin; DROP TABLE glpi_users; DROP TABLE glpi_entities;
 """
 
 '''
