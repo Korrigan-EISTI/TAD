@@ -81,8 +81,6 @@ EXCEPTION
 END;
 /
 
-show errors;
-
 -- Procédure pour créer un nouvel utilisateur
 CREATE OR REPLACE PROCEDURE create_user_procedure (
     p_username IN VARCHAR2,   -- Nom d'utilisateur
@@ -109,7 +107,7 @@ BEGIN
         v_username VARCHAR2(255);  -- Variable pour stocker le nom d'utilisateur
     BEGIN
         -- Obtenir le nom d'utilisateur à partir de l'ID fourni
-        SELECT name INTO v_username FROM glpi_users WHERE id = p_user_id;
+        SELECT last_name INTO v_username FROM glpi_users WHERE id = p_user_id;
         -- Attribuer le rôle de technicien pour l'emplacement spécifié à l'utilisateur
         EXECUTE IMMEDIATE 'GRANT ' || LOWER(p_location) || '_technician_role TO ' || v_username;
     EXCEPTION

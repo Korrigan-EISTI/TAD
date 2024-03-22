@@ -117,7 +117,7 @@ CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
 FOR EACH ROW
 BEGIN
-    create_user_procedure(:NEW.name, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
+    create_user_procedure(:NEW.last_name, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
 END;
 /
 

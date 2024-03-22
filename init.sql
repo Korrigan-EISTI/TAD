@@ -10,7 +10,7 @@ DROP TABLE glpi_entities;
 CREATE TABLE glpi_users (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     email VARCHAR(255) NOT NULL, -- Adresse email de l'utilisateur
-    name VARCHAR(255) NOT NULL, -- Nom de l'utilisateur
+    last_name VARCHAR(255) NOT NULL, -- Nom de l'utilisateur
     first_name VARCHAR(255) NOT NULL, -- Prénom de l'utilisateur
     password VARCHAR(255) NOT NULL -- Mot de passe de l'utilisateur
 );
