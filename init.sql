@@ -25,14 +25,13 @@ CREATE TABLE glpi_entities (
 -- Créer la table glpi_tickets pour représenter les tickets
 CREATE TABLE glpi_tickets (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
-    entites_id NUMBER(10) NOT NULL, -- Clé étrangère vers glpi_entities
+    entites_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc)
     name VARCHAR(255) NOT NULL, -- Nom du ticket
     creation_date TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- Date de création du ticket
     user_id_last_updater NUMBER(10), -- ID de l'utilisateur ayant mis à jour le ticket
     status NUMBER(1) NOT NULL CHECK (status IN (0, 1)), -- Statut du ticket (0=Actif, 1=Fermeture demandée)
     priority NUMBER(1) NOT NULL CHECK (priority IN (1, 5)), -- Priorité du ticket
     location VARCHAR(255) NOT NULL, -- Emplacement du ticket
-    items_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc)
     CONSTRAINT fk_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id), -- Contrainte de clé étrangère vers glpi_entities
     CONSTRAINT fk_user_id_last_updater FOREIGN KEY (user_id_last_updater) REFERENCES glpi_users(id)
 )CLUSTER clst_glpi_tickets_location(location);
@@ -40,14 +39,13 @@ CREATE TABLE glpi_tickets (
 CREATE TABLE glpi_treated_tickets (
     id NUMBER(10), -- Clé primaire de la table
     ticket_id NUMBER(10) NOT NULL, -- ID du ticket associé
-    entites_id NUMBER(10) NOT NULL, -- Clé étrangère vers glpi_entities
+    entites_id NUMBER(10) NOT NULL, -- Clé étrangère vers glpi_entities, l'entité défaillante associée au ticket (PC, Logiciel, etc)
     name VARCHAR(255) NOT NULL, -- Nom du ticket traité
     creation_date TIMESTAMP NOT NULL, -- Date de création du ticket traité
     closedDate TIMESTAMP NOT NULL, -- Date de fermeture du ticket
     solvedStatus NUMBER(1) NOT NULL CHECK (solvedStatus IN (0, 1)), -- Si le ticket a été fermé résolu ou non-résolu
     previousPriority NUMBER(1) NOT NULL CHECK (previousPriority IN (1, 5)), -- Priorité du ticket
     location VARCHAR(255) NOT NULL, -- Emplacement du ticket traité
-    items_id NUMBER(10) NOT NULL, -- ID de l'élément associé au ticket (PC, Logiciel, etc) traité
     CONSTRAINT pk_treated_tickets PRIMARY KEY (id, ticket_id), -- Clé primaire composée
     CONSTRAINT fk_treated_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id) -- Contrainte de clé étrangère vers glpi_entities
 )CLUSTER clst_glpi_tickets_location(location);
@@ -63,8 +61,8 @@ CREATE TABLE glpi_admin (
 -- Créer la table glpi_notifications pour représenter les notifications liées aux tickets
 CREATE TABLE glpi_notifications (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
-    user_id_1 NUMBER(10) NOT NULL, -- ID de l'utilisateur 1
-    user_id_2 NUMBER(10) NOT NULL, -- ID de l'utilisateur 2
+    user_id_1 NUMBER(10) NOT NULL, -- ID de l'utilisateur ayant ouvert le ticket
+    user_id_2 NUMBER(10) DEFAULT -1 NOT NULL, -- ID du technicien en charge du ticket, -1 si non attribué
     tickets_id NUMBER(10) NOT NULL, -- ID du ticket associé à la notification
     CONSTRAINT fk_notifications_user1 FOREIGN KEY (user_id_1) REFERENCES glpi_users(id), -- Contrainte de clé étrangère vers glpi_users pour user_id_1
     CONSTRAINT fk_notifications_user2 FOREIGN KEY (user_id_2) REFERENCES glpi_users(id), -- Contrainte de clé étrangère vers glpi_users pour user_id_2
