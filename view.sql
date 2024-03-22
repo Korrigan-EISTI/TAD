@@ -1,17 +1,11 @@
--- Création de la vue pour les tickets à Cergy
-CREATE OR REPLACE VIEW cergy_tickets AS
-SELECT *
-FROM glpi_tickets
-WHERE UPPER(location) = 'CERGY';
+DROP DATABASE LINK link_glpiAdmin_glpiAdmin_cergy;
+DROP DATABASE LINK link_glpiAdmin_glpiAdmin_pau;
 
--- Création de la vue pour les tickets à Pau
-CREATE OR REPLACE VIEW pau_tickets AS
-SELECT *
-FROM glpi_tickets
-WHERE UPPER(location) = 'PAU';
+CREATE DATABASE LINK link_glpiAdmin_glpiAdmin_cergy CONNECT TO glpiAdmin_cergy IDENTIFIED BY cergy USING 'remote_cergy_tns_entry';
+CREATE DATABASE LINK link_glpiAdmin_glpiAdmin_pau CONNECT TO glpiAdmin_pau IDENTIFIED BY pau USING 'remote_pau_tns_entry';
 
--- Accorder des autorisations aux rôles de technicien pour accéder aux vues
-GRANT SELECT, INSERT, DELETE, UPDATE ON cergy_tickets TO cergy_technician_role;
-GRANT SELECT, INSERT, DELETE, UPDATE ON pau_tickets TO pau_technician_role;
+CREATE OR REPLACE VIEW selectAllTickets AS SELECT * FROM glpi_tickets@link_glpiAdmin_glpiAdmin_cergy UNION SELECT * FROM glpi_tickets@link_glpiAdmin_glpiAdmin_pau;
+CREATE OR REPLACE VIEW selectAllClosedTickets AS SELECT * FROM glpi_treated_tickets@link_glpiAdmin_glpiAdmin_cergy UNION SELECT * FROM glpi_treated_tickets@link_glpiAdmin_glpiAdmin_pau;
+CREATE OR REPLACE VIEW selectAllUsers AS SELECT * FROM glpi_users@link_glpiAdmin_glpiAdmin_cergy UNION SELECT * FROM glpi_users@link_glpiAdmin_glpiAdmin_pau;
 
 COMMIT;

@@ -8,7 +8,7 @@ BEGIN
     -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
     SELECT COUNT(*) INTO v_technician_role_exists
     FROM USER_ROLE_PRIVS
-    WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
+    WHERE GRANTED_ROLE IN ('TECHNICIAN_ROLE');
 
     -- Récupérer la priorité du ticket
     SELECT priority INTO v_priority
@@ -43,13 +43,8 @@ END;
 CREATE OR REPLACE PROCEDURE reopen_ticket (
     p_ticket_id IN NUMBER  -- ID du ticket à rouvrir
 ) AS
-    v_technician_role_exists NUMBER(1);  -- Variable pour stocker l'existence de rôles de technicien
     v_priority NUMBER(1); -- Variable pour stocker la priorité du ticket
 BEGIN
-    -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
-    SELECT COUNT(*) INTO v_technician_role_exists
-    FROM USER_ROLE_PRIVS
-    WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
 
     -- Récupérer la priorité du ticket
     SELECT previousPriority INTO v_priority
@@ -98,8 +93,7 @@ END create_user_procedure;
 
 -- Procédure pour ajouter un rôle administratif à un utilisateur
 CREATE OR REPLACE PROCEDURE add_admin_procedure (
-    p_user_id IN NUMBER,     -- ID de l'utilisateur
-    p_location IN VARCHAR2   -- Emplacement pour attribuer le rôle (Cergy ou Pau)
+    p_user_id IN NUMBER     -- ID de l'utilisateur
 )
 AS
 BEGIN
@@ -109,7 +103,7 @@ BEGIN
         -- Obtenir le nom d'utilisateur à partir de l'ID fourni
         SELECT last_name INTO v_username FROM glpi_users WHERE id = p_user_id;
         -- Attribuer le rôle de technicien pour l'emplacement spécifié à l'utilisateur
-        EXECUTE IMMEDIATE 'GRANT ' || LOWER(p_location) || '_technician_role TO ' || v_username;
+        EXECUTE IMMEDIATE 'GRANT technician_role TO ' || v_username;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('L''utilisateur avec l''ID fourni n''existe pas.');  -- Gérer le cas où aucun utilisateur n'est trouvé avec l'ID donné
