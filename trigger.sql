@@ -52,64 +52,6 @@ BEGIN
 END;
 /
 
--- Déclencheur pour gérer les opérations sur les tickets à Cergy
-CREATE OR REPLACE TRIGGER cergy_tickets_trigger
-INSTEAD OF INSERT OR UPDATE OR DELETE ON cergy_tickets
-FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.priority);
-    ELSIF UPDATING THEN
-        -- Mettre à jour la table glpi_tickets
-        UPDATE glpi_tickets
-        SET
-            entites_id = :NEW.entites_id,
-            name = :NEW.name,
-            creation_date = :NEW.creation_date,
-            user_id_last_updater = :NEW.user_id_last_updater,
-            status = :NEW.status,
-            location = :NEW.location,
-            priority = :NEW.priority
-        WHERE
-            id = :NEW.id;
-    ELSIF DELETING THEN
-        -- Supprimer de la table glpi_tickets
-        DELETE FROM glpi_tickets WHERE id = :OLD.id;
-    END IF;
-END;
-/
-
--- Déclencheur pour gérer les opérations sur les tickets à Pau
-CREATE OR REPLACE TRIGGER pau_tickets_trigger
-INSTEAD OF INSERT OR UPDATE OR DELETE ON pau_tickets
-FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.priority);
-    ELSIF UPDATING THEN
-        -- Mettre à jour la table glpi_tickets
-        UPDATE glpi_tickets
-        SET
-            entites_id = :NEW.entites_id,
-            name = :NEW.name,
-            creation_date = :NEW.creation_date,
-            user_id_last_updater = :NEW.user_id_last_updater,
-            status = :NEW.status,
-            location = :NEW.location,
-            priority = :NEW.priority
-        WHERE
-            id = :NEW.id;
-    ELSIF DELETING THEN
-        -- Supprimer de la table glpi_tickets
-        DELETE FROM glpi_tickets WHERE id = :OLD.id;
-    END IF;
-END;
-/
-
 -- Déclencheur pour créer un utilisateur externe après l'insertion dans glpi_users
 CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
@@ -124,7 +66,7 @@ CREATE OR REPLACE TRIGGER add_admin_trigger
 AFTER INSERT ON glpi_admin
 FOR EACH ROW
 BEGIN
-    add_admin_procedure(:NEW.user_id, :NEW.location); -- Appel de la procédure stockée pour ajouter un administrateur externe avec les informations du nouvel administrateur
+    add_admin_procedure(:NEW.user_id); -- Appel de la procédure stockée pour ajouter un administrateur externe avec les informations du nouvel administrateur
 END;
 /
 
