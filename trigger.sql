@@ -59,8 +59,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id, :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -71,7 +71,8 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = :NEW.location,
-            items_id = :NEW.items_id
+            items_id = :NEW.items_id,
+            priority = :NEW.priority
         WHERE
             id = :NEW.id;
     ELSIF DELETING THEN
@@ -88,8 +89,8 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id);
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
+        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, :NEW.location, :NEW.items_id, :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
@@ -100,7 +101,8 @@ BEGIN
             user_id_last_updater = :NEW.user_id_last_updater,
             status = :NEW.status,
             location = :NEW.location,
-            items_id = :NEW.items_id
+            items_id = :NEW.items_id,
+            priority = :NEW.priority
         WHERE
             id = :NEW.id;
     ELSIF DELETING THEN

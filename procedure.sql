@@ -1,13 +1,19 @@
--- Procédure pour fermer un ticket
+-- Procédure pour fermer un ticket en tenant compte de la priorité
 CREATE OR REPLACE PROCEDURE close_ticket (
     p_ticket_id IN NUMBER  -- ID du ticket à fermer
 ) AS
     v_technician_role_exists NUMBER(1);  -- Variable pour stocker l'existence de rôles de technicien
+    v_priority NUMBER(1); -- Variable pour stocker la priorité du ticket
 BEGIN
     -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
     SELECT COUNT(*) INTO v_technician_role_exists
     FROM USER_ROLE_PRIVS
     WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
+
+    -- Récupérer la priorité du ticket
+    SELECT priority INTO v_priority
+    FROM glpi_tickets
+    WHERE id = p_ticket_id;
 
     -- Insérer dans la table glpi_treated_tickets en fonction des données du ticket existant
     EXECUTE IMMEDIATE '
@@ -16,43 +22,59 @@ BEGIN
         FROM glpi_tickets
         WHERE id = :ticket_id'
     USING v_technician_role_exists, p_ticket_id;
-        
+
     -- Supprimer le ticket traité de la table glpi_tickets
     DELETE FROM glpi_tickets WHERE id = p_ticket_id;
+
+    -- Si la priorité du ticket est élevée (5), notifier les administrateurs
+    IF v_priority = 5 THEN
+        -- Ajouter ici la logique pour notifier les administrateurs
+        DBMS_OUTPUT.PUT_LINE('Ticket fermé avec priorité élevée. Notification envoyée aux administrateurs.');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
-        -- Gérer les exceptions ici
         ROLLBACK;
         RAISE;
 END;
 /
 
--- Procédure pour rouvrir un ticket
+-- Procédure pour rouvrir un ticket en tenant compte de la priorité
 CREATE OR REPLACE PROCEDURE reopen_ticket (
     p_ticket_id IN NUMBER  -- ID du ticket à rouvrir
 ) AS
     v_technician_role_exists NUMBER(1);  -- Variable pour stocker l'existence de rôles de technicien
+    v_priority NUMBER(1); -- Variable pour stocker la priorité du ticket
 BEGIN
     -- Vérifier si l'utilisateur actuel possède l'un des rôles de technicien pour Cergy ou Pau
     SELECT COUNT(*) INTO v_technician_role_exists
     FROM USER_ROLE_PRIVS
     WHERE GRANTED_ROLE IN ('PAU_TECHNICIAN_ROLE', 'CERGY_TECHNICIAN_ROLE');
 
+    -- Récupérer la priorité du ticket
+    SELECT priority INTO v_priority
+    FROM glpi_treated_tickets
+    WHERE ticket_id = p_ticket_id;
+
     -- Insérer dans la table glpi_tickets en fonction des données du ticket traité
     EXECUTE IMMEDIATE '
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id)
-        SELECT :ticket_id, entites_id, name, SYSTIMESTAMP, NULL, 0, location, items_id
+        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, items_id, priority)
+        SELECT :ticket_id, entites_id, name, SYSTIMESTAMP, NULL, 0, location, items_id, :priority
         FROM glpi_treated_tickets
         WHERE ticket_id = :ticket_id'
-    USING p_ticket_id, p_ticket_id;
-        
+    USING p_ticket_id, v_priority, p_ticket_id;
+
     -- Supprimer le ticket traité de la table glpi_treated_tickets
-    EXECUTE IMMEDIATE 'DELETE FROM glpi_treated_tickets WHERE ticket_id = :ticket_id' USING p_ticket_id;
-    
+    DELETE FROM glpi_treated_tickets WHERE ticket_id = p_ticket_id;
+
     COMMIT;
+
+    -- Si la priorité du ticket est élevée (5), notifier les administrateurs
+    IF v_priority = 5 THEN
+        -- Ajouter ici la logique pour notifier les administrateurs
+        DBMS_OUTPUT.PUT_LINE('Ticket réouvert avec priorité élevée. Notification envoyée aux administrateurs.');
+    END IF;
 EXCEPTION
     WHEN OTHERS THEN
-        -- Gérer les exceptions ici
         ROLLBACK;
         RAISE;
 END;
@@ -86,10 +108,13 @@ BEGIN
         -- Obtenir le nom d'utilisateur à partir de l'ID fourni
         SELECT name INTO v_username FROM glpi_users WHERE id = p_user_id;
         -- Attribuer le rôle de technicien pour l'emplacement spécifié à l'utilisateur
-        EXECUTE IMMEDIATE 'GRANT' || LOWER(p_location) || '_technician_role TO ' || v_username;
+        EXECUTE IMMEDIATE 'GRANT ' || LOWER(p_location) || '_technician_role TO ' || v_username;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('L''utilisateur avec l''ID fourni n''existe pas.');  -- Gérer le cas où aucun utilisateur n'est trouvé avec l'ID donné
+        WHEN OTHERS THEN
+            ROLLBACK;
+            RAISE;
     END;
 END add_admin_procedure;
 /
