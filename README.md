@@ -4,7 +4,7 @@
 
 ## How to deploy GLPI database on your computer
 
-First download an Oracle Database and connect to _system_ to run :
+After setting up an Oracle Database on your computer, you first need to connect to _system_ and run :
 
 1) `user.sql`
 
