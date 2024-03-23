@@ -53,6 +53,7 @@ END;
 /
 
 -- Déclencheur pour créer un utilisateur externe après l'insertion dans glpi_users
+/*
 CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
 FOR EACH ROW
@@ -60,8 +61,10 @@ BEGIN
     create_user_procedure(:NEW.last_name, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
 END;
 /
+*/
 
 -- Déclencheur pour ajouter un administrateur externe après l'insertion dans glpi_admin
+/*
 CREATE OR REPLACE TRIGGER add_admin_trigger
 AFTER INSERT ON glpi_admin
 FOR EACH ROW
@@ -69,6 +72,7 @@ BEGIN
     add_admin_procedure(:NEW.user_id); -- Appel de la procédure stockée pour ajouter un administrateur externe avec les informations du nouvel administrateur
 END;
 /
+*/
 
 CREATE OR REPLACE TRIGGER trg_user_id_last_updater_notification
 AFTER UPDATE OF user_id_last_updater ON glpi_tickets

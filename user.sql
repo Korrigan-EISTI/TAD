@@ -20,6 +20,11 @@ CREATE USER glpiAdmin IDENTIFIED BY glpiAdmin;
 
 -- Accorder le rôle DBA à l'utilisateur glpiAdmin
 GRANT DBA TO glpiAdmin;
+GRANT CREATE USER TO glpiAdmin;
+GRANT CREATE SESSION TO glpiAdmin;
+GRANT CONNECT TO glpiAdmin WITH ADMIN OPTION;
+GRANT technician_role TO glpiAdmin WITH ADMIN OPTION;
+GRANT simple_user_role TO glpiAdmin WITH ADMIN OPTION;
 
 -- Créer un utilisateur pour l'administrateur GLPI
 CREATE USER glpiAdmin_cergy IDENTIFIED BY cergy DEFAULT TABLESPACE cergyAdmin;

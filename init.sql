@@ -12,7 +12,9 @@ CREATE TABLE glpi_users (
     email VARCHAR(255) NOT NULL, -- Adresse email de l'utilisateur
     last_name VARCHAR(255) NOT NULL, -- Nom de l'utilisateur
     first_name VARCHAR(255) NOT NULL, -- Prénom de l'utilisateur
-    password VARCHAR(255) NOT NULL -- Mot de passe de l'utilisateur
+    password VARCHAR(255) NOT NULL, -- Mot de passe de l'utilisateur
+    CONSTRAINT constraint_email UNIQUE (email),
+    CONSTRAINT constraint_last_name UNIQUE (last_name) -- Le nom de famille est notre identifiant pour le user
 );
 
 -- Créer la table glpi_entities pour représenter les entités associées aux tickets

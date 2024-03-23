@@ -76,20 +76,32 @@ EXCEPTION
 END;
 /
 
--- Procédure pour créer un nouvel utilisateur
-CREATE OR REPLACE PROCEDURE create_user_procedure (
-    p_username IN VARCHAR2,   -- Nom d'utilisateur
-    p_password IN VARCHAR2    -- Mot de passe
-)
-AS
+
+-- this take decade on first run :/
+CREATE OR REPLACE PROCEDURE create_users_procedure AS
+    user_count NUMBER;
 BEGIN
-    -- Créer un nouvel utilisateur avec le nom et le mot de passe fournis
-    EXECUTE IMMEDIATE 'CREATE USER ' || p_username || ' IDENTIFIED BY "' || p_password || '"';
-    EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || p_username;
-    -- Attribuer le rôle simple_user_role à l'utilisateur créé
-    EXECUTE IMMEDIATE 'GRANT simple_user_role TO ' || p_username;
-END create_user_procedure;
+    FOR user_rec IN (SELECT id, email, last_name, first_name, password FROM glpi_users) LOOP
+        -- Check if user already exists
+        SELECT COUNT(*) INTO user_count FROM all_users WHERE username = upper(user_rec.last_name);
+
+        -- If user does not exist, create it
+        IF user_count = 0 THEN
+            -- Create a new user with the information from the current user
+            BEGIN
+                EXECUTE IMMEDIATE 'CREATE USER ' || user_rec.last_name || ' IDENTIFIED BY ' || user_rec.password;
+                EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || user_rec.last_name;
+                -- Assign the simple_user_role role to the created user
+                EXECUTE IMMEDIATE 'GRANT simple_user_role TO ' || user_rec.last_name;
+            EXCEPTION
+                WHEN OTHERS THEN
+                    DBMS_OUTPUT.PUT_LINE('Error creating user ' || user_rec.last_name || ': ' || SQLERRM);
+            END;
+        END IF;
+    END LOOP;
+END create_users_procedure;
 /
+
 
 -- Procédure pour ajouter un rôle administratif à un utilisateur
 CREATE OR REPLACE PROCEDURE add_admin_procedure (

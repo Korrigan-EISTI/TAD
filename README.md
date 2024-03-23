@@ -29,3 +29,28 @@ Finally run the sql scripts in the following order :
 ## How to cancel the deployment of GLPI database on your computer
 
 Simply connect to _system_ and run `cancel.sql`
+
+## Temp (on school laptop):
+
+@"C:\Users\CYTech Student\TAD\user.sql"
+
+Connect glpiAdmin
+mdp: glpiAdmin
+
+@"C:\Users\CYTech Student\TAD\sequence.sql"
+@"C:\Users\CYTech Student\TAD\cluster.sql"
+@"C:\Users\CYTech Student\TAD\init.sql"
+@"C:\Users\CYTech Student\TAD\index.sql"
+@"C:\Users\CYTech Student\TAD\procedure.sql"
+@"C:\Users\CYTech Student\TAD\role.sql"
+@"C:\Users\CYTech Student\TAD\trigger.sql"
+@"C:\Users\CYTech Student\TAD\view.sql"
+
+@"C:\Users\CYTech Student\TAD\Cergy\views_cergy.sql"
+@"C:\Users\CYTech Student\TAD\Cergy\trigger_cergy.sql"
+@"C:\Users\CYTech Student\TAD\Pau\views_pau.sql"
+@"C:\Users\CYTech Student\TAD\Pau\trigger_pau.sql"
+
+alter session set "_ORACLE_SCRIPT"=true;
+
+@"C:\Users\CYTech Student\TAD\data.sql"
