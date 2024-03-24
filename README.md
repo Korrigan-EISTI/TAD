@@ -53,4 +53,5 @@ mdp: glpiAdmin
 
 alter session set "_ORACLE_SCRIPT"=true;
 
-@"C:\Users\CYTech Student\TAD\data.sql"
+@"C:\Users\CYTech Student\TAD\data_users.sql"
+@"C:\Users\CYTech Student\TAD\data_entities.sql"

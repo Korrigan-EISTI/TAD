@@ -2018,6 +2018,10 @@ BEGIN
 END;
 /
 
-COMMIT;
-
 Exec create_users_procedure;
+
+Exec add_admin_procedure(1);
+Exec add_admin_procedure(2);
+Exec add_admin_procedure(3);
+
+COMMIT;
