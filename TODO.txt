@@ -7,3 +7,4 @@ Last trigger à faire insertion sur dans la table notification dès que que last
 - Génération des données pour tester notre solution
 
 - Le rapport
+    - Détailler la modélsiation (vues, triggers, etc)
