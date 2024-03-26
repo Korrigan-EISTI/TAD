@@ -5,19 +5,17 @@ FOR EACH ROW
 BEGIN
     IF INSERTING THEN
         -- Insérer dans la table glpi_tickets
-        INSERT INTO glpi_tickets (id, entites_id, name, creation_date, user_id_last_updater, status, location, priority)
-        VALUES (:NEW.id, :NEW.entites_id, :NEW.name, :NEW.creation_date, :NEW.user_id_last_updater, :NEW.status, 'Pau', :NEW.priority);
+        INSERT INTO glpi_tickets (entites_id, name, user_id_last_updater, status, location, priority)
+        VALUES (:NEW.entites_id, :NEW.name, :NEW.user_id_last_updater, :NEW.status, 'Pau', :NEW.priority);
     ELSIF UPDATING THEN
         -- Mettre à jour la table glpi_tickets
         UPDATE glpi_tickets
         SET
-            entites_id = :NEW.entites_id,
-            name = :NEW.name,
-            creation_date = :NEW.creation_date,
-            user_id_last_updater = :NEW.user_id_last_updater,
-            status = :NEW.status,
-            location = 'Pau',
-            priority = :NEW.priority
+            entites_id = NVL(:NEW.entites_id, entites_id),
+            name =  NVL(:NEW.name, name),
+            user_id_last_updater =  NVL(:NEW.user_id_last_updater, user_id_last_updater),
+            status = NVL(:NEW.status, status),
+            priority =  NVL(:NEW.priority, priority)
         WHERE
             id = :NEW.id;
     ELSIF DELETING THEN
