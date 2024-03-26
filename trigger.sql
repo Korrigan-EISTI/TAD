@@ -58,7 +58,7 @@ CREATE OR REPLACE TRIGGER create_user_trigger
 AFTER INSERT ON glpi_users
 FOR EACH ROW
 BEGIN
-    create_user_procedure(:NEW.last_name, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
+    create_user_procedure(:NEW.last_name, :NEW.id, :NEW.password); -- Appel de la procédure stockée pour créer un utilisateur externe avec les informations du nouvel utilisateur
 END;
 /
 */
@@ -88,6 +88,15 @@ BEGIN
     -- Insérer une nouvelle notification
     INSERT INTO glpi_notifications (id, user_id_1, user_id_2, tickets_id)
     VALUES (glpi_notifications_seq.NEXTVAL, v_user_id_1, v_user_id_2, :NEW.id);
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_delete_user
+BEFORE DELETE ON glpi_users
+FOR EACH ROW
+BEGIN
+    -- Supprimer l'utilisateur Oracle correspondant
+    EXECUTE IMMEDIATE 'DROP USER ' || :OLD.last_name || ' CASCADE';
 END;
 /
 

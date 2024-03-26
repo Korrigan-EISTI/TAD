@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 -- Déclencheur pour gérer les opérations sur les tickets sur le site de Pau
+=======
+-- Déclencheur pour gérer les opérations sur les tickets sur le site de Fermat
+>>>>>>> 8cde769 (MELVYN !!!!!!!!!)
 CREATE OR REPLACE TRIGGER insert_ticket_pau
 INSTEAD OF INSERT OR UPDATE OR DELETE ON selectTicketFromPau
 FOR EACH ROW
