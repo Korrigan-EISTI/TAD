@@ -24,6 +24,7 @@ BEGIN
     USING v_technician_role_exists, p_ticket_id;
 
     -- Supprimer le ticket traité de la table glpi_tickets
+    DELETE FROM glpi_notifications WHERE tickets_id = p_ticket_id;
     DELETE FROM glpi_tickets WHERE id = p_ticket_id;
 
     -- Si la priorité du ticket est élevée (5), notifier les administrateurs
@@ -37,6 +38,9 @@ EXCEPTION
         RAISE;
 END;
 /
+
+GRANT EXECUTE ON close_ticket to technician_role;
+GRANT EXECUTE ON close_ticket to simple_user_role;
 
 -- Procédure pour rouvrir un ticket en tenant compte de la priorité
 -- Avertissement : Procédure créée avec erreurs de compilation.
@@ -76,6 +80,9 @@ EXCEPTION
 END;
 /
 
+GRANT EXECUTE ON reopen_ticket to technician_role;
+GRANT EXECUTE ON reopen_ticket to simple_user_role;
+
 -- Beaucoup trop long mais j'ai pas d'autre solution pour l'instant
 CREATE OR REPLACE PROCEDURE create_users_procedure AS
 BEGIN
@@ -103,6 +110,8 @@ BEGIN
     END LOOP;
 END create_users_procedure;
 /
+
+GRANT EXECUTE ON create_users_procedure to technician_role;
 
 CREATE OR REPLACE PROCEDURE add_admin_procedure (
     p_user_id IN NUMBER     -- ID de l'utilisateur
@@ -146,6 +155,6 @@ BEGIN
 END;
 /
 
-
+GRANT EXECUTE ON scan_and_check_users to technician_role;
 
 COMMIT;

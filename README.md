@@ -34,7 +34,8 @@ Simply connect to _system_ and run `cancel.sql`
 
 @"C:\Users\CYTech Student\TAD\user.sql"
 
-CONNECT glpiAdmin/glpiAdmin
+
+CONNECT glpiAdmin_cergy/cergy
 
 @"C:\Users\CYTech Student\TAD\sequence.sql"
 @"C:\Users\CYTech Student\TAD\cluster.sql"
@@ -47,14 +48,36 @@ CONNECT glpiAdmin/glpiAdmin
 
 @"C:\Users\CYTech Student\TAD\Cergy\views_cergy.sql"
 @"C:\Users\CYTech Student\TAD\Cergy\trigger_cergy.sql"
+
+alter session set "_ORACLE_SCRIPT"=true;
+
+@"C:\Users\CYTech Student\TAD\data\data_users.sql"
+@"C:\Users\CYTech Student\TAD\data\data_entities_cergy.sql"
+
+CONNECT Berg_Xanthus/KWK34CES9KU
+
+@"C:\Users\CYTech Student\TAD\data\data_tickets_cergy.sql"
+
+
+CONNECT glpiAdmin_pau/pau
+
+@"C:\Users\CYTech Student\TAD\sequence.sql"
+@"C:\Users\CYTech Student\TAD\cluster.sql"
+@"C:\Users\CYTech Student\TAD\init.sql"
+@"C:\Users\CYTech Student\TAD\index.sql"
+@"C:\Users\CYTech Student\TAD\procedure.sql"
+@"C:\Users\CYTech Student\TAD\role.sql"
+@"C:\Users\CYTech Student\TAD\trigger.sql"
+@"C:\Users\CYTech Student\TAD\view.sql"
+
 @"C:\Users\CYTech Student\TAD\Pau\views_pau.sql"
 @"C:\Users\CYTech Student\TAD\Pau\trigger_pau.sql"
 
 alter session set "_ORACLE_SCRIPT"=true;
 
-@"C:\Users\CYTech Student\TAD\data_users.sql"
-@"C:\Users\CYTech Student\TAD\data_entities.sql"
+@"C:\Users\CYTech Student\TAD\data\data_users.sql"
+@"C:\Users\CYTech Student\TAD\data\data_entities_pau.sql"
 
 CONNECT Berg_Xanthus/KWK34CES9KU
 
-@"C:\Users\CYTech Student\TAD\data_tickets.sql"
+@"C:\Users\CYTech Student\TAD\data\data_tickets_pau.sql"
