@@ -91,14 +91,4 @@ BEGIN
 END;
 /
 
--- CHECK, JE SUIS 90% sure que ca marche PAS
-CREATE OR REPLACE TRIGGER trg_delete_user
-BEFORE DELETE ON glpi_users
-FOR EACH ROW
-BEGIN
-    -- Supprimer l'utilisateur Oracle correspondant
-    EXECUTE IMMEDIATE 'DROP USER ' || :OLD.last_name || '_' || :OLD.first_name || ' CASCADE';
-END;
-/
-
 COMMIT;

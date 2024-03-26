@@ -126,4 +126,26 @@ EXCEPTION
 END add_admin_procedure;
 /
 
+CREATE OR REPLACE PROCEDURE scan_and_check_users
+IS
+    v_user_count NUMBER;
+BEGIN
+    -- Pour chaque utilisateur Oracle
+    FOR oracle_user IN (SELECT username FROM all_users WHERE username NOT IN ('SYS','SYSTEM'))
+    LOOP
+        -- Vérifier si un utilisateur GLPI correspondant existe
+        SELECT COUNT(*) INTO v_user_count
+        FROM glpi_users
+        WHERE CONCAT(glpi_users.last_name, '_', glpi_users.first_name) = oracle_user.username;
+        
+        -- Si aucun utilisateur GLPI correspondant n'est trouvé
+        IF v_user_count = 0 THEN
+            EXECUTE IMMEDIATE 'DROP USER ' oracle_user;
+        END IF;
+    END LOOP;
+END;
+/
+
+
+
 COMMIT;
