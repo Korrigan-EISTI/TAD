@@ -18,8 +18,8 @@ VALUES (50, 'myCergyTicket', 1, 0, 2);
 
 UPDATE glpiAdmin_cergy.selectTicketFromFermat SET priority = 5 WHERE name = 'myCergyTicket';
 
-Exec glpiAdmin_cergy.close_ticket(601);
-Exec glpiAdmin_cergy.reopen_ticket(601);
+Exec glpiAdmin_cergy.close_ticket_cergy(601);
+Exec glpiAdmin_cergy.reopen_ticket_cergy(601);
 
 
 COMMIT;

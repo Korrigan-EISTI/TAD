@@ -76,6 +76,7 @@ CONNECT glpiAdmin_cergy/cergy
 
 @"C:\Users\CYTech Student\TAD\Cergy\views_cergy.sql"
 @"C:\Users\CYTech Student\TAD\Cergy\trigger_cergy.sql"
+@"C:\Users\CYTech Student\TAD\Cergy\procedure_cergy.sql"
 
 alter session set "_ORACLE_SCRIPT"=true;
 
@@ -100,6 +101,7 @@ CONNECT glpiAdmin_pau/pau
 
 @"C:\Users\CYTech Student\TAD\Pau\views_pau.sql"
 @"C:\Users\CYTech Student\TAD\Pau\trigger_pau.sql"
+@"C:\Users\CYTech Student\TAD\Pau\procedure_pau.sql"
 
 alter session set "_ORACLE_SCRIPT"=true;
 

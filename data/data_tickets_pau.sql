@@ -18,8 +18,8 @@ VALUES (50, 'myPauTicket', 1, 0, 2);
 
 UPDATE glpiAdmin_pau.selectTicketFromPau SET priority = 5 WHERE name = 'myPauTicket';
 
-Exec glpiAdmin_pau.close_ticket(101);
-Exec glpiAdmin_pau.reopen_ticket(101);
+Exec glpiAdmin_pau.close_ticket_pau(101);
+Exec glpiAdmin_pau.reopen_ticket_pau(101);
 
 
 COMMIT;
