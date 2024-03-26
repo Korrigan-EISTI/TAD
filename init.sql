@@ -32,7 +32,7 @@ CREATE TABLE glpi_tickets (
     creation_date TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- Date de création du ticket
     user_id_last_updater NUMBER(10), -- ID de l'utilisateur ayant mis à jour le ticket
     status NUMBER(1) NOT NULL CHECK (status IN (0, 1)), -- Statut du ticket (0=Actif, 1=Fermeture demandée)
-    priority NUMBER(1) NOT NULL CHECK (priority IN (1, 5)), -- Priorité du ticket
+    priority NUMBER(1) NOT NULL CHECK (priority IN (1, 2, 3, 4, 5)), -- Priorité du ticket
     location VARCHAR(255) NOT NULL, -- Emplacement du ticket
     CONSTRAINT fk_tickets_entities FOREIGN KEY (entites_id) REFERENCES glpi_entities(id), -- Contrainte de clé étrangère vers glpi_entities
     CONSTRAINT fk_user_id_last_updater FOREIGN KEY (user_id_last_updater) REFERENCES glpi_users(id)

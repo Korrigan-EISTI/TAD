@@ -34,8 +34,7 @@ Simply connect to _system_ and run `cancel.sql`
 
 @"C:\Users\CYTech Student\TAD\user.sql"
 
-Connect glpiAdmin
-mdp: glpiAdmin
+CONNECT glpiAdmin/glpiAdmin
 
 @"C:\Users\CYTech Student\TAD\sequence.sql"
 @"C:\Users\CYTech Student\TAD\cluster.sql"
@@ -55,3 +54,7 @@ alter session set "_ORACLE_SCRIPT"=true;
 
 @"C:\Users\CYTech Student\TAD\data_users.sql"
 @"C:\Users\CYTech Student\TAD\data_entities.sql"
+
+CONNECT Berg_Xanthus/KWK34CES9KU
+
+@"C:\Users\CYTech Student\TAD\data_tickets.sql"

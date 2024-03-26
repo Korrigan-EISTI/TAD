@@ -91,6 +91,7 @@ BEGIN
 END;
 /
 
+-- CHECK, JE SUIS 90% sure que ca marche PAS
 CREATE OR REPLACE TRIGGER trg_delete_user
 BEFORE DELETE ON glpi_users
 FOR EACH ROW
