@@ -96,7 +96,7 @@ BEFORE DELETE ON glpi_users
 FOR EACH ROW
 BEGIN
     -- Supprimer l'utilisateur Oracle correspondant
-    EXECUTE IMMEDIATE 'DROP USER ' || :OLD.last_name || ' CASCADE';
+    EXECUTE IMMEDIATE 'DROP USER ' || :OLD.last_name || '_' || :OLD.first_name || ' CASCADE';
 END;
 /
 
