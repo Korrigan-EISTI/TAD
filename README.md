@@ -10,25 +10,53 @@ After setting up an Oracle Database on your computer, you first need to connect 
 
 <br>
 
-Then connect to _glpiAdmin_ with the password _glpiAdmin_
+Then connect to _glpiAdmin_cergy_ with the password _cergy_
 
 <br>
 
-Finally run the sql scripts in the following order :
+Then run the sql scripts in the following order :
 
-2) `cluster.sql`
-3) `init.sql`
-4) `index.sql`
-5) `view.sql`
-6) `sequence.sql`
-7) `procedure.sql`
-8) `trigger.sql`
+1) `cluster.sql`
+2) `init.sql`
+3) `index.sql`
+4) `sequence.sql`
+5) `procedure.sql`
+6) `trigger.sql`
+7) `Cergy/views_cergy.sql`
+8) `Cergy/trigger_cergy.sql`
+
+<br>
+
+<br>
+
+Then connect to _glpiAdmin_pau_ with the password _pau_
+
+<br>
+
+Then run the sql scripts in the following order :
+
+1) `cluster.sql`
+2) `init.sql`
+3) `index.sql`
+4) `sequence.sql`
+5) `procedure.sql`
+6) `trigger.sql`
+7) `Pau/views_pau.sql`
+8) `Pau/trigger_pau.sql`
+
+<br>
+
+Finally connect to _glpiAdmin_ with the password _glpiAdmin_ :
+
+1) `view.sql`
 
 <br>
 
 ## How to cancel the deployment of GLPI database on your computer
 
-Simply connect to _system_ and run `cancel.sql`
+Simply connect to _glpiAdmin_pau_ with the password _pau_ and run `Pau/cancel_pau.sql` then to _glpiAdmin_cergy_ with the password _cergy_ and run `Cergy/cancel_cergy.sql`
+
+Finally connect to _glpiAdmin_ with the password _glpiAdmin_ and run `cancel.sql`
 
 ## Temp (on school laptop):
 
