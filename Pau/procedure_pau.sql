@@ -43,7 +43,6 @@ GRANT EXECUTE ON close_ticket_pau to technician_role;
 GRANT EXECUTE ON close_ticket_pau to simple_user_role;
 
 -- Procédure pour rouvrir un ticket en tenant compte de la priorité
--- Avertissement : Procédure créée avec erreurs de compilation.
 CREATE OR REPLACE PROCEDURE reopen_ticket_pau (
     p_ticket_id IN NUMBER  -- ID du ticket à rouvrir
 ) AS

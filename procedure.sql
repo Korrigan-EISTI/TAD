@@ -1,4 +1,3 @@
--- Beaucoup trop long mais j'ai pas d'autre solution pour l'instant
 CREATE OR REPLACE PROCEDURE create_users_procedure AS
 BEGIN
     FOR user_rec IN (SELECT id, email, last_name, first_name, password FROM glpi_users) LOOP
@@ -6,7 +5,8 @@ BEGIN
             user_count NUMBER;
         BEGIN
             -- Check if user already exists
-            SELECT COUNT(*) INTO user_count FROM all_users WHERE username = upper(user_rec.last_name || '_' || user_rec.first_name);
+            SELECT COUNT(*) INTO user_count FROM all_users
+            WHERE username = upper(user_rec.last_name || '_' || user_rec.first_name);
 
             -- If user does not exist, create user and grant privileges
             IF user_count = 0 THEN
@@ -15,7 +15,8 @@ BEGIN
 
                 EXECUTE IMMEDIATE 'GRANT CONNECT TO ' || user_rec.last_name || '_' || user_rec.first_name;
 
-                EXECUTE IMMEDIATE 'GRANT simple_user_role TO ' || user_rec.last_name || '_' || user_rec.first_name;
+                EXECUTE IMMEDIATE 'GRANT simple_user_role TO ' || user_rec.last_name || '_' ||
+                                    user_rec.first_name;
             END IF;
         EXCEPTION
             WHEN OTHERS THEN
