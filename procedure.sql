@@ -72,6 +72,8 @@ BEGIN
 END;
 /
 
+show errors;
+
 GRANT EXECUTE ON scan_and_check_users to technician_role;
 
 COMMIT;

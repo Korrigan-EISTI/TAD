@@ -7,7 +7,7 @@ CREATE INDEX idx_glpi_entities_location ON glpi_entities(location);
 
 -- Création d'un index sur la colonne priority de la table glpi_tickets
 -- Cet index améliorera les performances des requêtes impliquant la priorité des tickets
-CREATE INDEX idx_glpi_tickets_priority ON glpi_tickets(priority);
+CREATE BITMAP INDEX idx_glpi_tickets_priority ON glpi_tickets(priority);
 
 -- Création d'un index sur la colonne entites_id de la table glpi_tickets
 -- Cet index améliorera les performances des requêtes impliquant les entités des tickets
