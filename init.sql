@@ -22,7 +22,7 @@ CREATE TABLE glpi_entities (
     id NUMBER(10) PRIMARY KEY, -- Clé primaire de la table
     name VARCHAR(255) NOT NULL, -- Nom de l'entité
     location VARCHAR(255) NOT NULL -- Emplacement de l'entité
-);
+)CLUSTER clst_glpi_tickets_location(location);
 
 -- Créer la table glpi_tickets pour représenter les tickets
 CREATE TABLE glpi_tickets (

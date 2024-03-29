@@ -60,11 +60,12 @@ BEGIN
         -- Vérifier si un utilisateur GLPI correspondant existe
         SELECT COUNT(*) INTO v_user_count
         FROM glpi_users
-        WHERE CONCAT(glpi_users.last_name, '_', glpi_users.first_name) = oracle_user.username;
+        WHERE glpi_users.last_name || '_' || glpi_users.first_name = oracle_user.username;
         
         -- Si aucun utilisateur GLPI correspondant n'est trouvé
         IF v_user_count = 0 THEN
-            EXECUTE IMMEDIATE 'DROP USER ' oracle_user;
+            -- Supprimer l'utilisateur
+            EXECUTE IMMEDIATE 'DROP USER ' || oracle_user.username || ' CASCADE';
         END IF;
     END LOOP;
 END;
